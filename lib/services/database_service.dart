@@ -154,11 +154,10 @@ class DatabaseService {
 
   static Future<void> initialize() async {
     try {
-      print('Initializing database...');
-      await database;
-      print('Database initialized successfully');
+      // Database will be initialized lazily when first accessed
+      // This prevents blocking the main thread during app startup
+      _database = null;
     } catch (e) {
-      print('Error initializing database: $e');
       rethrow;
     }
   }
@@ -292,14 +291,58 @@ class DatabaseService {
 
   static Future<double> getTotalIncome() async {
     final db = await database;
-    final r = await db.rawQuery('SELECT SUM($colTransactionAmount) as total FROM $transactionsTable WHERE $colTransactionType = ?', ['income']);
-    return (r.first['total'] as num?)?.toDouble() ?? 0.0;
+    final transactions = await db.query(
+      transactionsTable,
+      where: '$colTransactionType = ?',
+      whereArgs: ['income'],
+      columns: [colTransactionAmount],
+    );
+    
+    final encryptionService = await getEncryptionService();
+    double total = 0.0;
+    
+    for (final transaction in transactions) {
+      final encryptedAmount = transaction[colTransactionAmount] as String?;
+      if (encryptedAmount != null && encryptedAmount.isNotEmpty) {
+        try {
+          final amount = encryptionService.decryptFinancialAmount(encryptedAmount);
+          total += amount;
+        } catch (e) {
+          // Skip invalid amounts
+          continue;
+        }
+      }
+    }
+    
+    return total;
   }
 
   static Future<double> getTotalExpense() async {
     final db = await database;
-    final r = await db.rawQuery('SELECT SUM($colTransactionAmount) as total FROM $transactionsTable WHERE $colTransactionType = ?', ['expense']);
-    return (r.first['total'] as num?)?.toDouble() ?? 0.0;
+    final transactions = await db.query(
+      transactionsTable,
+      where: '$colTransactionType = ?',
+      whereArgs: ['expense'],
+      columns: [colTransactionAmount],
+    );
+    
+    final encryptionService = await getEncryptionService();
+    double total = 0.0;
+    
+    for (final transaction in transactions) {
+      final encryptedAmount = transaction[colTransactionAmount] as String?;
+      if (encryptedAmount != null && encryptedAmount.isNotEmpty) {
+        try {
+          final amount = encryptionService.decryptFinancialAmount(encryptedAmount);
+          total += amount;
+        } catch (e) {
+          // Skip invalid amounts
+          continue;
+        }
+      }
+    }
+    
+    return total;
   }
 
   static Future<double> getBalance() async {

@@ -14,16 +14,12 @@ class EncryptionService {
   Future<void> initialize() async {
     if (_encryptionKey == null) {
       try {
-        print('Initializing encryption service...');
         _encryptionKey = await _getOrCreateKey();
         _initializedInstance = this;
-        print('Encryption service initialized successfully');
       } catch (e) {
-        print('Error initializing encryption service: $e');
         // Use fallback key for development
         _encryptionKey = sha256.convert(utf8.encode('true_budget_fallback_key_2024')).toString();
         _initializedInstance = this;
-        print('Using fallback encryption key');
       }
     }
   }
