@@ -33,8 +33,8 @@ A modern and intuitive personal finance management application built with Flutte
 - Flutter
 - Dart
 - Material Design 3
-- Provider / Riverpod / Bloc *(whichever you used)*
-- Shared Preferences / SQLite / Firebase *(whichever you used)*
+- Provider / Riverpod / 
+- Shared Preferences / SQLite / 
 
 ## Features Overview
 
@@ -51,9 +51,9 @@ A modern and intuitive personal finance management application built with Flutte
 ## Getting Started
 
 ```bash
-git clone https://github.com/vanraj21/TrueBudget-Flutter.git
+git clone https://github.com/vanraj21/TrueBudget-Expense-Tracker.git
 
-cd TrueBudget-Flutter
+cd TrueBudget-Expense-Tracker
 
 flutter pub get
 
@@ -65,11 +65,12 @@ flutter run
 ```
 lib/
 ├── models/
-├── screens/
-├── widgets/
-├── services/
 ├── providers/
+├── screens/
+├── services/
+├── themes/
 ├── utils/
+├── widgets/
 └── main.dart
 ```
 
@@ -87,4 +88,4 @@ lib/
 
 **Vanraj Parmar**
 
-BCA Student | Flutter Developer | AI & ML Enthusiast
+MCA STUDENT | Flutter Developer | AI & ML Enthusiast
